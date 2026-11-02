@@ -324,7 +324,7 @@ app.post(
 
     db.prepare(
       `INSERT INTO assessment_responses (id, session_id, item_id, response, is_correct, event_id, seq, ts)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(
       newId(),
       session.id,
@@ -341,6 +341,75 @@ app.post(
       isCorrect,
       explanation: item.explanation || null,
       correctIndex: item.correctIndex ?? null,
+    });
+  })
+);
+
+// ---------- evidence upload (camera photos) ----------
+app.post(
+  '/api/sessions/:code/evidence',
+  wrap(async (req, res) => {
+    const session = byCode(req);
+    if (!session) return fail(res, 404, 'no_session', 'unknown session code');
+
+    // Handle multipart form data for image upload
+    if (!req.is('multipart/form-data')) {
+      return fail(res, 400, 'bad_request', 'expected multipart/form-data');
+    }
+
+    // Multer is not used; we parse manually from req.body and req.files
+    let imageBase64 = req.body?.imageBase64;
+    const sessionCode = req.body?.sessionCode;
+    const deviceId = req.body?.deviceId;
+
+    if (!imageBase64) return fail(res, 400, 'bad_request', 'image data required');
+    if (!sessionCode) return fail(res, 400, 'bad_request', 'session code required');
+
+    // Decode base64 image
+    let imageBuffer;
+    try {
+      const base64Data = imageBase64.replace(/^data:image\/jpeg;base64,/, '').replace(/^data:image\/png;base64,/, '');
+      imageBuffer = Buffer.from(base64Data, 'base64');
+    } catch (err) {
+      return fail(res, 400, 'bad_image', 'invalid base64 image data');
+    }
+
+    // Validate MIME type and size
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (imageBuffer.length > maxSize) {
+      const mb = (imageBuffer.length / 1024 / 1024).toFixed(2);
+      return fail(res, 400, 'image_toolarge', `image too large: ${mb}MB, max 2MB`);
+    }
+
+    // Validate content type from data URL
+    if (!/^data:image\/((jpeg|jfif|png)|png)$/.test(imageBase64)) {
+      return fail(res, 400, 'bad_image', 'unsupported image format, use JPEG or PNG');
+    }
+
+    // Store evidence reference in the session events
+    const eventId = newId();
+    const ts = Date.now();
+
+    const event = appendEvent({
+      sessionId: session.id,
+      type: 'student.evidence_submitted',
+      eventId: eventId,
+      role: 'student',
+      deviceId: deviceId || session.student_device,
+      payload: {
+        imageDataUrl: imageBase64,
+        imageMimeType: imageBase64.match(/^data:(image\/[^;]+)/)?.[1] || 'image/jpeg',
+        imageSize: imageBuffer.length,
+        ts,
+      },
+    });
+
+    // Store in a simple evidence tracking table entry
+    // We'll just persist the event; the frontend can read it from the bundle
+
+    res.status(201).json({
+      event,
+      message: 'Evidence recorded',
     });
   })
 );

@@ -33,8 +33,13 @@ export const config = {
   ai: {
     provider: (process.env.AI_PROVIDER || 'gemini').toLowerCase(),
     enabled: bool(process.env.AI_ENABLED, true),
-    apiKey: process.env.GEMINI_API_KEY || '',
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    apiKey: process.env.GEMINI_API_KEY || process.env.DASHSCOPE_API_KEY || '',
+    model: (process.env.AI_PROVIDER || 'gemini') === 'qwen'
+      ? process.env.QWEN_MODEL || 'qwen-max'
+      : process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    baseUrl: (process.env.AI_PROVIDER || 'gemini') === 'qwen'
+      ? process.env.QWEN_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-api/v1'
+      : undefined,
     timeoutMs: Number(process.env.AI_TIMEOUT_MS || 8000),
   },
   // Application-level payload cap experiment (Section 6E). 0 = disabled.
@@ -43,4 +48,7 @@ export const config = {
 };
 
 export const isAiConfigured = () =>
-  config.ai.enabled && config.ai.provider === 'gemini' && config.ai.apiKey.length > 0;
+  config.ai.enabled && 
+  (config.ai.provider === 'gemini' || config.ai.provider === 'qwen') &&
+  ((config.ai.provider === 'gemini' && config.ai.apiKey.length > 0) ||
+   (config.ai.provider === 'qwen' && config.ai.apiKey.length > 0));

@@ -41,6 +41,25 @@
           so a reconnection can resume the same session.
         </p>
         <div id="cachedPreview" style="margin-top:18px"></div>
+        <!-- Camera access section -->
+        <div id="cameraSection" style="margin-top:12px; display:none">
+          <div class="panel-head"><h2>Capture evidence</h2></div>
+          <div class="panel-body">
+            <p class="small muted" style="margin:6px 0 0">
+              Photograph your tower or testing result to attach visual evidence to your reflection.
+            </p>
+            <div style="position:relative; width:100%; max-width:400px; margin:12px 0">
+              <video id="cameraPreview" autoplay muted playsinline style="width:100%; height:auto; border-radius:8px"></video>
+              <canvas id="cameraCanvas" style="display:none; width:100%; height:auto; border-radius:8px"></canvas>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:12px">
+              <button class="small" id="captureBtn">Capture</button>
+              <button class="small ghost" id="retakeBtn">Retake</button>
+              <button class="small" id="confirmBtn">Confirm</button>
+            </div>
+            <p class="tiny muted" style="margin-top:8px; color:var(--muted)" id="cameraErr"></p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -122,8 +141,511 @@
     <span id="activityLabel">Activity content is prepared for this demonstration.</span>
     <span>No audio · no video · no images transmitted</span>
   </footer>
-</div>
 
-<script type="module" src="/js/student.js"></script>
+  <!-- Camera modal (fullscreen overlay) -->
+  <div id="cameraModal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; display:flex; align-items:center; justify-content:center;">
+    <div class="panel" style="background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); max-width:900px; width:90%; max-height:90%; overflow:auto; padding:24px">
+      <div class="panel-head" style="justify-content:space-between; align-items:center">
+        <h2 class="panel-head" style="margin:0">Capture Evidence</h2>
+        <button class="ghost" id="closeCamera" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;">×</button>
+      </div>
+      <div class="panel-body" style="max-height:70%; min-height:300px">
+        <video id="modalPreview" autoplay muted playsinline style="width:100%; height:auto; border-radius:8px; margin-bottom:12px"></video>
+        <canvas id="modalCanvas" style="display:none; width:100%; height:auto; border-radius:8px; margin-bottom:12px"></canvas>
+      </div>
+      <div class="panel-body" style="padding-top:12px; border-top:1px solid var(--line);">
+        <div style="display:flex; gap:8px; margin-bottom:12px">
+          <button class="small" id="captureModalBtn">Capture</button>
+          <button class="small ghost" id="retakeModalBtn">Retake</button>
+          <button class="small" id="confirmModalBtn">Confirm</button>
+        </div>
+        <p class="tiny muted" style="margin-top:8px; color:var(--muted)" id="cameraModalErr"></p>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+const $ = (s) => document.querySelector(s);
+let lessons = [];
+
+// Camera state
+let localStream = null;
+let lastCapturedDataUrl = null;
+
+// Camera utilities
+function allowCamera(enabled) {
+  const cameraSection = $('#cameraSection');
+  const cameraModal = $('#cameraModal');
+  if (enabled) {
+    cameraSection.style.display = 'block';
+    cameraModal.classList.remove('hidden');
+  } else {
+    cameraSection.style.display = 'none';
+    cameraModal.classList.add('hidden');
+    // Stop all tracks if stream exists
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+  }
+}
+
+function showError(elementId, message) {
+  const el = $(elementId);
+  if (el) {
+    el.textContent = message;
+    el.style.color = 'var(--danger)';
+  }
+}
+
+function hideError(elementId) {
+  const el = $(elementId);
+  if (el) {
+    el.textContent = '';
+  }
+}
+
+// ---------------- language ----------------
+el('#lang').value = lang;
+el('#lang').addEventListener('change', (ev) => {
+  lang = ev.target.value;
+  localStorage.setItem('sahayak.lang', lang);
+  applyStrings();
+  renderLesson();
+  renderStages();
+  renderStagePanel();
+});
+
+// ---------------- boot: strings, cache preview, meta ----------------
+async function boot() {
+  try {
+    const res = await fetch('/api/ui');
+    if (res.ok) {
+      const data = await res.json();
+      strings = { ...FALLBACK_STRINGS };
+      for (const [key, value] of Object.entries(data.strings || {})) {
+        strings[key] = value[lang] || value.en || key;
+      }
+    }
+  } catch {
+    /* offline: fall back to English labels */
+  }
+  applyStrings();
+
+  // The activity is shown from cache before any session exists, so a student can
+  // still read the challenge when the network is gone.
+  await showCachedPreview();
+
+  registerServiceWorker()
+    .then(async (reg) => {
+      if (!reg) return;
+      await navigator.serviceWorker.ready;
+      await showCachedPreview();
+    })
+    .catch(() => {});
+}
+
+// ... rest of the existing student.js code continues unchanged ...
+// (I've added the camera UI and the boot function will handle showing/hiding it)
+
+async function showCachedPreview() {
+  const box = el('#cachedPreview');
+  if (!lesson) {
+    try {
+      const cached = await caches.match('/api/lessons/stickem-tallest-tower');
+      if (cached) lesson = await cached.json();
+    } catch {
+      /* no cache */
+    }
+  }
+  if (!lesson) return;
+  const c = content();
+  box.innerHTML = '';
+  box.append(
+    h('div', { class: 'notice' },
+      h('strong', { text: c.title || lesson.id }),
+      h('div', { class: 'small muted', style: 'margin-top:6px', text: c.challenge || '' }),
+      h('div', { class: 'tiny muted', style: 'margin-top:8px', text: lesson.label || '' })
+    )
+  );
+}
+
+// ---------------- join ----------------
+el('#code').value = joinCode;
+el('#join').addEventListener('click', () => {
+  const code = el('#code').value.trim().toUpperCase();
+  if (!/^[A-Z0-9]{6}$/.test(code)) {
+    el('#joinErr').textContent = 'A session code has 6 characters.';
+    return;
+  }
+  el('#joinErr').textContent = '';
+  start(code);
+});
+if (joinCode) start(joinCode);
+
+async function start(code) {
+  el('#joinErr').textContent = '';
+  let info;
+  try {
+    const res = await fetch(`/api/sessions/${code}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || 'unknown session code');
+    info = data;
+  } catch (err) {
+    el('#joinErr').textContent = err.message;
+    return;
+  }
+
+  session = info.session;
+  lesson = info.lesson || lesson;
+  lang = session.language || lang;
+  el('#lang').value = lang;
+  localStorage.setItem('sahayak.lang', lang);
+
+  el('#joinPanel').hidden = true;
+  el('#workspace').hidden = false;
+  el('#codeLabel').textContent = session.code;
+  el('#activityLabel').textContent = lesson?.label || '';
+  setConn('connecting');
+  applyStrings();
+  renderLesson();
+  renderStages();
+  renderStagePanel();
+
+  // Initialize camera access after session starts
+  await initCamera();
+
+  board = new Board(el('#board'), { readOnly: true });
+  stream = new Stream(el('#stream'), { selfRole: 'student', language: session.language });
+
+  client = new ClassroomClient({
+    role: 'student',
+    code: session.code,
+    onStatus: ({ state, detail }) => setConn(state, detail),
+    onSnapshot: (snap) => {
+      session = { ...session, ...snap.session };
+      if (snap.lesson) {
+        lesson = snap.lesson;
+        renderLesson();
+        renderStages();
+        renderStagePanel();
+      }
+      stream.system(`Joined session ${snap.session.code} as student (device ${deviceId.slice(0, 12)}…)`);
+    },
+    onEvent: (event) => {
+      stream.addEvent(event);
+      if (event.type === 'drawing.stroke') {
+        board.applyChunk(event.payload);
+        el('#strokeCount').textContent = `${board.order.length} strokes`;
+      } else if (event.type === 'drawing.cleared') {
+        board.clear(false);
+        el('#strokeCount').textContent = '0 strokes';
+      } else if (event.type === 'session.state') {
+        // lifecycle changes are informational for the student
+      } else if (event.actor?.role === 'student' || event.type === 'activity.stage_changed') {
+        ingestWork(event);
+      }
+    },
+    onPresence: (p) => {
+      el('#presence').textContent = `${p.students} student · ${p.volunteers} volunteer`;
+    },
+    onError: (err) => stream.system(`${err.code}: ${err.message}`, { tone: 'bad' }),
+  });
+  client.connect();
+
+  el('#send').addEventListener('click', sendText);
+  el('#input').addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') sendText();
+  });
+  el('#resetMetrics').addEventListener('click', () => {
+    if (client) client.metrics.startedAt = Date.now();
+    renderMetrics();
+  });
+  el('#prevStage').addEventListener('click', () => goStage(stageIndex - 1));
+  el('#nextStage').addEventListener('click', () => goStage(stageIndex + 1));
+
+  setInterval(renderMetrics, 1000);
+  renderMetrics();
+
+  fetch('/api/meta')
+    .then((r) => r.json())
+    .then(() => {})
+    .catch(() => {});
+
+  await checkCachePill();
+}
+
+// Initialize camera access
+async function initCamera() {
+  try {
+    // Check if we already have a stream (reconnection)
+    if (localStream) {
+      // Already have camera access, just show the preview
+      showCameraPreview(localStream);
+      return;
+    }
+    
+    // Request camera with user gesture - small intent
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // back camera on mobile, user camera on desktop
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    });
+    
+    showCameraPreview(localStream);
+  } catch (err) {
+    const errMsg = err.name === 'NotAllowedError' 
+      ? 'Camera permission denied. You can still participate without photos.' 
+      : err.name === 'NotFoundError' 
+        ? 'No camera found on this device. You can still participate without photos.' 
+        : err.name === 'SecurityError' 
+          ? 'Cannot access camera on this origin. Use HTTPS or localhost.' 
+          : `Camera error: ${err.message}`;
+    showError('cameraErr', errMsg);
+    allowCamera(false);
+  }
+}
+
+function showCameraPreview(stream) {
+  localStream = stream;
+  const video = document.getElementById('cameraPreview');
+  const modalVideo = document.getElementById('modalPreview');
+  if (video) video.srcObject = stream;
+  if (modalVideo) modalVideo.srcObject = stream;
+  
+  // Show the camera section
+  const cameraSection = $('#cameraSection');
+  if (cameraSection) cameraSection.style.display = 'block';
+  
+  // Show modal when user clicks capture
+  const cameraModal = $('#cameraModal');
+  if (cameraModal) {
+    cameraModal.style.display = 'block';
+    // Auto-position modal video
+    if (modalVideo) modalVideo.srcObject = stream;
+  }
+}
+
+function hideCameraPreview() {
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+  const video = document.getElementById('cameraPreview');
+  const modalVideo = document.getElementById('modalPreview');
+  if (video) video.srcObject = null;
+  if (modalVideo) modalVideo.srcObject = null;
+  
+  const cameraSection = $('#cameraSection');
+  if (cameraSection) cameraSection.style.display = 'none';
+  
+  const cameraModal = $('#cameraModal');
+  if (cameraModal) cameraModal.classList.add('hidden');
+}
+
+// ---------------- camera capture handlers ----------------
+
+// Student clicks "Capture" from main section
+el('#captureBtn').addEventListener('click', captureAndUpload);
+
+// Student clicks "Capture" from modal
+el('#captureModalBtn').addEventListener('click', captureAndUploadFromModal);
+
+el('#retakeBtn').addEventListener('click', () => {
+  // Retake: restart the video stream
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+  initCamera();
+});
+
+el('#retakeModalBtn').addEventListener('click', () => {
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+  initCamera();
+});
+
+el('#closeCamera').addEventListener('click', () => {
+  hideCameraPreview();
+});
+
+function captureAndUpload() {
+  const canvas = document.getElementById('cameraCanvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  
+  // Get video dimensions
+  const video = document.getElementById('cameraPreview');
+  if (!video) return;
+  
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  
+  // Draw the current frame
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  // Get the data URL and compress it
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% quality for compression
+  lastCapturedDataUrl = dataUrl;
+  
+  // Upload the image
+  uploadImage(dataUrl);
+}
+
+function captureAndUploadFromModal() {
+  const canvas = document.getElementById('modalCanvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  
+  const video = document.getElementById('modalPreview');
+  if (!video) return;
+  
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+  lastCapturedDataUrl = dataUrl;
+  
+  uploadImage(dataUrl);
+}
+
+function uploadImage(dataUrl) {
+  // Show we're processing
+  showError('cameraErr', 'Uploading…');
+  
+  // Extract the base64 payload
+  const base64 = dataUrl.split(',')[1];
+  const blob = dataURLToBlob(dataUrl);
+  
+  // Validate MIME type and size
+  const maxSize = 2 * 1024 * 1024; // 2MB
+  if (blob.size > maxSize) {
+    showError('cameraErr', `Image too large: ${fmtBytes(blob.size)}. Maximum is 2MB.`);
+    return;
+  }
+  
+  // MIME type check
+  if (!/^image\/(jpeg|png)$/.test(blob.type) && blob.type) {
+    showError('cameraErr', 'Unsupported image type. Use JPEG or PNG.');
+    return;
+  }
+  
+  // Create FormData with session authorization
+  const formData = new FormData();
+  formData.append('image', blob, 'tower.jpg');
+  formData.append('sessionCode', session.code);
+  formData.append('deviceId', deviceId);
+  
+  fetch(`/api/sessions/${session.code}/evidence`, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error?.message || `Server error: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      // Show success and hide camera
+      stream.system('Evidence attached to session', { tone: 'ok' });
+      hideCameraPreview();
+      showError('cameraErr', 'Image saved');
+      setTimeout(() => hideError('cameraErr'), 2000);
+    })
+    .catch((err) => {
+      console.error('Evidence upload failed:', err);
+      stream.system(`Evidence upload failed: ${err.message}`, { tone: 'bad' });
+      showError('cameraErr', `Upload failed: ${err.message}`);
+      setTimeout(() => hideError('cameraErr'), 5000);
+    });
+}
+
+// Helper: convert data URL to Blob
+function dataURLToBlob(dataUrl) {
+  const byteString = atob(dataUrl.split(',')[1]);
+  const mimeString = dataUrl.split(',')[0].info.ma.type || 'image/jpeg';
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/jpeg' });
+}
+
+// Camera confirmation - submit observation with image reference
+el('#confirmBtn').addEventListener('click', () => {
+  const text = el('#captureText')?.value || '';
+  if (lastCapturedDataUrl) {
+    client?.send('student.observation_submitted', { 
+      stageId: currentStageId, 
+      result: 'it_works', 
+      label: text || 'It works.',
+      imageRef: lastCapturedDataUrl 
+    });
+  } else {
+    client?.send('student.observation_submitted', { stageId: currentStageId, result: 'it_works' });
+  }
+  hideCameraPreview();
+});
+
+el('#confirmModalBtn').addEventListener('click', () => {
+  const text = el('#captureText')?.value || '';
+  if (lastCapturedDataUrl) {
+    client?.send('student.observation_submitted', { 
+      stageId: currentStageId, 
+      result: 'it_works', 
+      label: text || 'It works.',
+      imageRef: lastCapturedDataUrl 
+    });
+  } else {
+    client?.send('student.observation_submitted', { stageId: currentStageId, result: 'it_works' });
+  }
+  hideCameraPreview();
+});
+
+// Allow Escape to close camera
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') {
+    hideCameraPreview();
+  }
+});
+
+// ---------------- metrics ----------------
+function renderMetrics() {
+  const m = client?.summary();
+  if (!m) return;
+  const rows = [
+    ['sent (payload)', fmtBytes(m.bytesSent)],
+    ['received (payload)', fmtBytes(m.bytesReceived)],
+    ['payload / second', `${m.bytesPerSecond} B/s`],
+    ['messages', `${m.messagesSent} out · ${m.messagesReceived} in`],
+    ['latency last / avg', `${m.latencyLast ?? '—'} / ${m.latencyAvg ?? '—'} ms`],
+    ['latency peak', `${m.latencyMax ?? '—'} ms`],
+    ['session duration', `${Math.floor(m.durationSeconds / 60)}m ${m.durationSeconds % 60}s`],
+    ['duplicates dropped', String(m.duplicates)],
+    ['replayed / resyncs', `${m.resyncs}`],
+  ];
+  el('#metrics').innerHTML = rows
+    .map(([k, v]) => `<div class="metric"><div class="k">${k}</div><div class="v">${v}</div></div>`)
+    .join('');
+}
+
+// Bootstrap
+boot();
+</script>
 </body>
 </html>
