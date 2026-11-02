@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sahayak — Volunteer</title>
+<meta name="theme-color" content="#0a0f16" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><strong>Sahayak</strong><span>volunteer</span></div>
+    <span class="pill" id="conn">not connected</span>
+    <span class="pill" id="statePill">—</span>
+    <div class="spacer"></div>
+    <span class="small muted mono" id="codeLabel"></span>
+    <span class="pill" id="aiPill">AI —</span>
+  </header>
+
+  <main>
+    <div id="entryPanel" class="grid two" style="max-width:900px;margin:30px auto">
+      <div class="panel">
+        <div class="panel-head"><h2>Create a session</h2></div>
+        <div class="panel-body">
+          <label for="topic">Topic</label>
+          <input id="topic" value="Tallest tower challenge" maxlength="160" />
+          <div style="margin-top:10px">
+            <label for="language">Student language</label>
+            <select id="language">
+              <option value="kn">Kannada (ಕನ್ನಡ)</option>
+              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="en">English only</option>
+            </select>
+          </div>
+          <div style="margin-top:10px">
+            <label for="lesson">Lesson pack</label>
+            <select id="lesson"></select>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <button class="primary" id="create">Create</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Join an existing session</h2></div>
+        <div class="panel-body">
+          <label for="code">Session code</label>
+          <input id="code" maxlength="8" placeholder="K7QM2P" style="text-transform:uppercase;letter-spacing:0.2em;font-family:var(--mono)" />
+          <div class="row" style="margin-top:12px">
+            <button id="join">Join</button>
+            <span class="err" id="entryErr"></span>
+          </div>
+          <p class="tiny muted" style="margin-top:12px;line-height:1.55">
+            Joining an existing session loads its message history, student observations and the latest handoff,
+            so a second volunteer can continue without reconstructing the conversation.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="workspace" class="grid two" hidden>
+      <section class="grid" style="align-content:start">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Session</h2>
+            <div class="spacer"></div>
+            <span class="small muted" id="presence">—</span>
+          </div>
+          <div class="panel-body">
+            <div class="state-chain" id="stateChain"></div>
+            <div style="margin-top:10px" class="small">
+              <div><span class="muted">Topic:</span> <span id="topicLabel">—</span></div>
+              <div><span class="muted">Language:</span> <span id="langLabel">—</span></div>
+              <div><span class="muted">Assigned volunteer:</span> <span id="volLabel">—</span></div>
+              <div><span class="muted">Current stage:</span> <span id="stageLabel">—</span></div>
+            </div>
+            <div class="row wrap" style="margin-top:12px" id="lifecycleButtons"></div>
+            <div id="matchBox" style="margin-top:12px"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Activity and pathway</h2>
+            <div class="spacer"></div>
+            <span class="pill" id="cachePill">cache —</span>
+          </div>
+          <div class="panel-body" id="lessonBody"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Handoff for the next volunteer</h2>
+            <div class="spacer"></div>
+            <button class="small" id="genHandoff">Generate</button>
+          </div>
+          <div class="panel-body handoff" id="handoffBody">
+            <p class="small muted">No handoff generated yet. It is built from persisted events, not from a script.</p>
+          </div>
+          <div class="panel-head" style="border-top:1px solid var(--line)">
+            <h2>Private coaching notes</h2>
+            <div class="spacer"></div>
+            <button class="small" id="genTips">Suggest</button>
+          </div>
+          <div class="panel-body" id="tipsBody">
+            <p class="small muted">Indicative suggestions based on recorded session evidence.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid" style="align-content:start">
+        <div class="panel" style="min-height:320px">
+          <div class="panel-head">
+            <h2>Conversation</h2>
+            <div class="spacer"></div>
+            <span class="small muted" id="msgCount">0 messages</span>
+          </div>
+          <div id="stream"></div>
+          <div class="composer">
+            <input id="input" placeholder="Explain in English…" maxlength="500" autocomplete="off" />
+            <button class="primary" id="send">Send</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Whiteboard (vector, ~100 ms batches)</h2>
+            <div class="spacer"></div>
+            <button class="small ghost" id="clearBoard">clear</button>
+          </div>
+          <div class="panel-body">
+            <canvas class="board" id="board"></canvas>
+            <div class="row wrap" style="margin-top:10px">
+              <div class="swatches" id="swatches"></div>
+              <div class="spacer"></div>
+              <label for="width" style="margin:0;font-size:11px">width</label>
+              <input id="width" type="range" min="1" max="12" value="3" style="width:90px" />
+              <span class="pill" id="strokeCount">0 strokes</span>
+            </div>
+            <p class="tiny muted" style="margin:8px 0 0">
+              Coordinates are normalised to the canvas, so the student reconstructs the same geometry on any screen.
+              Only vector points are sent — never a canvas image.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Connection measurements</h2>
+            <div class="spacer"></div>
+            <button class="small ghost" id="resetMetrics">reset</button>
+          </div>
+          <div class="panel-body">
+            <div class="metrics" id="metrics"></div>
+            <p class="tiny muted" style="margin:10px 0 0;line-height:1.5">
+              Application payload only. Excludes handshake, lesson downloads and browser/TCP overhead —
+              see TEST_RESULTS.md for the conditions recorded during testing.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span>DEMONSTRATION ACTIVITY — Stick 'Em tallest-tower challenge</span>
+    <span>Session codes are join handles, not authentication.</span>
+  </footer>
+</div>
+
+<script type="module" src="/js/teacher.js"></script>
+</body>
+</html>

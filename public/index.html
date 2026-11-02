@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sahayak — learning assistance on a weak connection</title>
+<meta name="theme-color" content="#0a0f16" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+<div class="landing">
+  <div class="row" style="justify-content:space-between;margin-bottom:26px">
+    <div class="brand"><strong>Sahayak</strong><span>multilingual learning assistance</span></div>
+    <span class="pill" id="aiPill">checking AI…</span>
+  </div>
+
+  <h1>Meaning, not media.</h1>
+  <p class="lead">
+    Sahayak connects a student and a volunteer over text and vector drawings only — no audio, no video.
+    A local Kannada glossary handles common phrases without any cloud request, and AI translation is a fallback that
+    can fail without interrupting the lesson.
+  </p>
+
+  <div class="panel" style="margin-bottom:18px">
+    <div class="panel-head"><h2>Demonstration activity</h2><div class="spacer"></div><span class="pill">Stick 'Em</span></div>
+    <div class="panel-body">
+      <strong>Tallest Tower Challenge</strong>
+      <p class="small muted" style="margin:6px 0 0;line-height:1.6">
+        A student builds the tallest free-standing tower they can from chopsticks and connectors, and works through
+        ten stages: choose, understand, question, predict, plan, build, test, explain, improve, reflect.
+      </p>
+      <p class="tiny muted" style="margin:10px 0 0;line-height:1.6">
+        Material counts, the official measuring rule and any scoring are <strong>pending human confirmation</strong> —
+        they are not shown as facts. Reference:
+        <a href="https://academy.stickem.sg/guest" target="_blank" rel="noreferrer">academy.stickem.sg/guest</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="cards">
+    <a class="card-link" href="/student">
+      <strong>Open the student view →</strong>
+      <span>Join with a session code. Work through the ten stages, ask your own question, sketch a plan, receive messages and drawings, and record what happened.</span>
+    </a>
+    <a class="card-link" href="/teacher">
+      <strong>Open the volunteer view →</strong>
+      <span>Create or join a session, follow the student's stage, draw explanations, send messages and read the student's own answers.</span>
+    </a>
+  </div>
+
+  <div class="panel" style="margin-top:18px">
+    <div class="panel-head"><h2>Create a learning session</h2></div>
+    <div class="panel-body">
+      <div class="grid two" style="gap:12px">
+        <div>
+          <label for="topic">Topic</label>
+          <input id="topic" placeholder="What will you talk about?" value="Tallest tower challenge" maxlength="160" />
+        </div>
+        <div>
+          <label for="language">Student language</label>
+          <select id="language">
+            <option value="kn">Kannada (ಕನ್ನಡ)</option>
+            <option value="hi">Hindi (हिन्दी)</option>
+            <option value="en">English only</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <label for="lesson">Lesson pack</label>
+        <select id="lesson"></select>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="create">Create session</button>
+        <span class="small muted" id="status"></span>
+      </div>
+      <div id="result" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <p class="tiny muted" style="margin-top:20px;line-height:1.6">
+    The activity in this build is the <strong>Stick 'Em tallest-tower challenge</strong>. Its rules are delivered as
+    structured activity data, so the platform is not tied to one activity. Unverified details stay marked as pending
+    confirmation rather than being invented.
+  </p>
+</div>
+
+<script type="module">
+const $ = (s) => document.querySelector(s);
+let lessons = [];
+
+async function boot() {
+  try {
+    const meta = await (await fetch('/api/meta')).json();
+    const ai = meta.ai;
+    $('#aiPill').textContent = ai.configured
+      ? `AI: ${ai.provider} (${ai.model})`
+      : ai.enabled ? 'AI: not configured — glossary only' : 'AI: disabled (kill-switch)';
+    $('#aiPill').className = 'pill ' + (ai.configured ? 'online' : '');
+  } catch {
+    $('#aiPill').textContent = 'server unreachable';
+    $('#aiPill').className = 'pill error';
+  }
+
+  try {
+    const data = await (await fetch('/api/lessons')).json();
+    lessons = data.lessons;
+    $('#lesson').innerHTML = lessons
+      .map((l) => `<option value="${l.id}">${l.title} — v${l.contentVersion}</option>`)
+      .join('');
+  } catch {
+    $('#status').textContent = 'lessons unavailable';
+  }
+}
+
+$('#create').addEventListener('click', async () => {
+  const button = $('#create');
+  button.disabled = true;
+  $('#status').textContent = 'creating…';
+  try {
+    const res = await fetch('/api/sessions', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        topic: $('#topic').value.trim() || 'Tallest tower challenge',
+        language: $('#language').value,
+        lessonId: $('#lesson').value,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || 'could not create session');
+    const code = data.session.code;
+    $('#status').textContent = 'created';
+    $('#result').innerHTML = `
+      <div class="notice info">
+        Session code: <span class="code">${code}</span>
+        <div style="margin-top:8px" class="row wrap">
+          <a class="btn" href="/student?code=${code}">Student view</a>
+          <a class="btn" href="/teacher?code=${code}">Volunteer view</a>
+        </div>
+        <div class="tiny" style="margin-top:8px">
+          A session code is a join handle, not authentication. Open the two views in separate browsers or windows.
+        </div>
+      </div>`;
+  } catch (err) {
+    $('#status').textContent = '';
+    $('#result').innerHTML = `<div class="notice bad">${err.message}</div>`;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+boot();
+</script>
+</body>
+</html>

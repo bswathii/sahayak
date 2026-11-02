@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-11-02T08:14:37.183Z",
+  "environment": {
+    "node": "v24.22.0",
+    "platform": "win32 10.0.26200",
+    "cpu": "Snapdragon(R) X - X126100 - Qualcomm(R) Oryon(TM) CPU",
+    "cores": 8,
+    "serverHost": "127.0.0.1 (loopback, no network shaping applied)"
+  },
+  "scenario": {
+    "description": "Two clients in one session. Every 2 s: one student message, one volunteer message, alternating stroke chunks of 30 points, and a latency ping from each client.",
+    "durationSeconds": 20.4,
+    "tickMs": 2000,
+    "payloadCapBps": 400,
+    "networkShaping": "application payload cap 400 B/s (SIMULATED constraint, not OS-level network shaping)"
+  },
+  "payload": {
+    "serverToClientsBytes": 950,
+    "serverToClientsBytesPerSecond": 46.5,
+    "studentToServerBytes": 1305,
+    "volunteerToServerBytes": 4733,
+    "combinedBytesPerSecond": 342.2,
+    "eventsDelivered": 3,
+    "note": "Application event frames only. Excludes WebSocket handshake, HTTP lesson download, TLS and TCP overhead, so real wire traffic is higher."
+  },
+  "latencyMs": {
+    "samples": 18,
+    "min": 3,
+    "p50": 6,
+    "p95": 113,
+    "max": 113
+  },
+  "delivery": {
+    "eventsDelivered": 3,
+    "capDrops": 0,
+    "note": "Delivery was throttled by the application payload cap; this is a simulated constraint and must not be read as proof of operation at this bandwidth on a real network."
+  },
+  "limitations": [
+    "Loopback only: no real mobile network was used, so these numbers do not describe a 2G/EDGE link.",
+    "Both clients ran on the same machine as the server.",
+    "The only constraint applied was the application payload cap. No OS-level network shaping or DevTools throttling was used.",
+    "Payload figures exclude per-frame WebSocket and TCP overhead."
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "id": "stickem-tallest-tower",
+  "contentVersion": 1,
+  "language": "en",
+  "languages": ["en", "hi", "kn"],
+  "label": "ROUND 1 DEMONSTRATION ACTIVITY",
+  "title": "Tallest Tower Challenge",
+  "objective": "Find out how shape, joints and balance decide how tall a structure can stand before it falls.",
+  "category": "structures",
+  "source": "Stick 'Em Academy Guest Mode — https://academy.stickem.sg/guest",
+  "translationStatus": "UNVERIFIED",
+  "translationNote": "Kannada and Hindi activity text is prepared for the demonstration but has not been reviewed by a competent speaker. Only the English text is source content.",
+  "i18n": {
+    "en": {
+      "title": "Tallest Tower Challenge",
+      "challenge": "Build the tallest tower you can that stands up on its own, using only the sticks and connectors in front of you.",
+      "objective": "Find out how shape, joints and balance decide how tall a structure can stand before it falls.",
+      "materials": [
+        "Stick 'Em sticks (chopsticks)",
+        "Stick 'Em connectors"
+      ],
+      "constraints": [
+        "Use only the sticks and connectors from the kit.",
+        "The tower must stand on its own — no tape, no glue, no wall and nobody holding it.",
+        "You may rebuild as many times as you like before the final measure."
+      ],
+      "guidance": [
+        "Read the challenge and the materials first.",
+        "Ask a question and make a prediction before you build.",
+        "Sketch the shape you want to try.",
+        "Build it yourself, then test it and record what happened."
+      ],
+      "pendingConfirmation": [
+        "Exact number of sticks and connectors per student",
+        "Official measuring rule (height to the top connector, or the highest point?)",
+        "Any official scoring rules from the Stick 'Em lesson brief"
+      ]
+    },
+    "kn": {
+      "title": "ಅತ್ಯಂತ ಎತ್ತರದ ಗೋಪುರ ಸವಾಲು",
+      "challenge": "ನಿಮ್ಮ ಮುಂದಿರುವ ಕಡ್ಡಿಗಳು ಮತ್ತು ಕೀಲುಗಳನ್ನು ಮಾತ್ರ ಬಳಸಿ, ತಾನೇ ನಿಲ್ಲುವ, ನಿಮಗೆ ಸಾಧ್ಯವಾದಷ್ಟು ಎತ್ತರದ ಗೋಪುರವನ್ನು ಕಟ್ಟಿ.",
+      "objective": "ಆಕಾರ, ಕೀಲುಗಳು ಮತ್ತು ಸಮತೋಲನವು ಒಂದು ರಚನೆ ಬೀಳುವ ಮೊದಲು ಎಷ್ಟು ಎತ್ತರ ನಿಲ್ಲಬಹುದು ಎಂಬುದನ್ನು ನಿರ್ಧರಿಸುತ್ತವೆ ಎಂದು ತಿಳಿಯಿರಿ.",
+      "materials": ["ಸ್ಟಿಕ್ ಎಮ್ ಕಡ್ಡಿಗಳು", "ಸ್ಟಿಕ್ ಎಮ್ ಕೀಲುಗಳು"],
+      "constraints": [
+        "ಕಿಟ್‌ನಲ್ಲಿರುವ ಕಡ್ಡಿಗಳು ಮತ್ತು ಕೀಲುಗಳನ್ನು ಮಾತ್ರ ಬಳಸಿ.",
+        "ಗೋಪುರ ತಾನೇ ನಿಲ್ಲಬೇಕು — ಟೇಪ್, ಅಂಟು, ಗೋಡೆ ಅಥವಾ ಯಾರೂ ಹಿಡಿದುಕೊಳ್ಳಬಾರದು.",
+        "ಅಂತಿಮ ಅಳತೆಯ ಮೊದಲು ನೀವು ಎಷ್ಟು ಬಾರಿ ಬೇಕಾದರೂ ಮತ್ತೆ ಕಟ್ಟಬಹುದು."
+      ],
+      "guidance": [
+        "ಮೊದಲು ಸವಾಲು ಮತ್ತು ವಸ್ತುಗಳನ್ನು ಓದಿ.",
+        "ಕಟ್ಟುವ ಮೊದಲು ಒಂದು ಪ್ರಶ್ನೆ ಕೇಳಿ ಮತ್ತು ಊಹೆ ಮಾಡಿ.",
+        "ನೀವು ಪ್ರಯತ್ನಿಸಲು ಬಯಸುವ ಆಕಾರವನ್ನು ಚಿತ್ರಿಸಿ.",
+        "ನೀವೇ ಕಟ್ಟಿ, ನಂತರ ಪರೀಕ್ಷಿಸಿ ಮತ್ತು ಏನಾಯಿತು ಎಂದು ದಾಖಲಿಸಿ."
+      ],
+      "pendingConfirmation": [
+        "ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಗೆ ನಿಖರವಾದ ಕಡ್ಡಿ ಮತ್ತು ಕೀಲುಗಳ ಸಂಖ್ಯೆ",
+        "ಅಧಿಕೃತ ಅಳತೆಯ ನಿಯಮ",
+        "ಸ್ಟಿಕ್ ಎಮ್ ಪಾಠದಲ್ಲಿರುವ ಅಧಿಕೃತ ಅಂಕಗಳ ನಿಯಮ"
+      ]
+    },
+    "hi": {
+      "title": "सबसे ऊँचा टावर चुनौती",
+      "challenge": "सिर्फ़ अपने सामने रखी छड़ियों और कनेक्टरों से, जितना ऊँचा हो सके, खुद खड़ा रहने वाला टावर बनाइए.",
+      "objective": "जानिए कि आकार, जोड़ और संतुलन तय करते हैं कि कोई ढाँचा गिरने से पहले कितना ऊँचा खड़ा रह सकता है.",
+      "materials": ["स्टिक एम छड़ियाँ", "स्टिक एम कनेक्टर"],
+      "constraints": [
+        "सिर्फ़ किट की छड़ियाँ और कनेक्टर इस्तेमाल करें.",
+        "टावर खुद खड़ा रहे — टेप, गोंद, दीवार या किसी का सहारा नहीं.",
+        "अंतिम माप से पहले आप जितनी बार चाहें दोबारा बना सकते हैं."
+      ],
+      "guidance": [
+        "पहले चुनौती और सामग्री पढ़िए.",
+        "बनाने से पहले एक प्रश्न पूछिए और अनुमान लगाइए.",
+        "जो आकार आज़माना है उसका चित्र बनाइए.",
+        "खुद बनाइए, फिर जाँचिए और बताइए क्या हुआ."
+      ],
+      "pendingConfirmation": [
+        "प्रति छात्र छड़ियों और कनेक्टरों की सही संख्या",
+        "आधिकारिक माप का नियम",
+        "स्टिक एम पाठ के आधिकारिक अंकन नियम"
+      ]
+    }
+  },
+  "stages": [
+    {
+      "id": "choose",
+      "key": "CHOOSE",
+      "input": "none",
+      "title": { "en": "Choose", "kn": "ಆಯ್ಕೆ", "hi": "चुनाव" },
+      "prompt": {
+        "en": "Choose the tallest-tower challenge and begin.",
+        "kn": "ಅತ್ಯಂತ ಎತ್ತರದ ಗೋಪುರ ಸವಾಲನ್ನು ಆಯ್ಕೆಮಾಡಿ ಮತ್ತು ಪ್ರಾರಂಭಿಸಿ.",
+        "hi": "सबसे ऊँचा टावर चुनौती चुनिए और शुरू कीजिए."
+      }
+    },
+    {
+      "id": "understand",
+      "key": "UNDERSTAND",
+      "input": "none",
+      "title": { "en": "Understand", "kn": "ಅರ್ಥಮಾಡಿಕೊಳ್ಳಿ", "hi": "समझिए" },
+      "prompt": {
+        "en": "What is the challenge, and what can you use?",
+        "kn": "ಸವಾಲು ಏನು, ಮತ್ತು ನೀವು ಏನನ್ನು ಬಳಸಬಹುದು?",
+        "hi": "चुनौती क्या है, और आप क्या इस्तेमाल कर सकते हैं?"
+      }
+    },
+    {
+      "id": "question",
+      "key": "QUESTION",
+      "input": "text",
+      "title": { "en": "Question", "kn": "ಪ್ರಶ್ನೆ", "hi": "प्रश्न" },
+      "prompt": {
+        "en": "What do you want to find out before you start?",
+        "kn": "ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ನೀವು ಏನನ್ನು ತಿಳಿದುಕೊಳ್ಳಲು ಬಯಸುತ್ತೀರಿ?",
+        "hi": "शुरू करने से पहले आप क्या जानना चाहते हैं?"
+      }
+    },
+    {
+      "id": "predict",
+      "key": "PREDICT",
+      "input": "text",
+      "title": { "en": "Predict", "kn": "ಊಹೆ", "hi": "अनुमान" },
+      "prompt": {
+        "en": "What do you think will happen? Why?",
+        "kn": "ನಿಮ್ಮ ಅಭಿಪ್ರಾಯದಲ್ಲಿ ಏನಾಗುತ್ತದೆ? ಏಕೆ?",
+        "hi": "आपके अनुसार क्या होगा? क्यों?"
+      }
+    },
+    {
+      "id": "plan",
+      "key": "PLAN",
+      "input": "text+drawing",
+      "title": { "en": "Plan", "kn": "ಯೋಜನೆ", "hi": "योजना" },
+      "prompt": {
+        "en": "How will you approach the challenge? Write a short plan and sketch your design.",
+        "kn": "ನೀವು ಸವಾಲನ್ನು ಹೇಗೆ ಎದುರಿಸುತ್ತೀರಿ? ಚಿಕ್ಕ ಯೋಜನೆ ಬರೆದು ನಿಮ್ಮ ವಿನ್ಯಾಸವನ್ನು ಚಿತ್ರಿಸಿ.",
+        "hi": "आप इस चुनौती को कैसे हल करेंगे? छोटी योजना लिखिए और अपना डिज़ाइन बनाइए."
+      }
+    },
+    {
+      "id": "build",
+      "key": "BUILD",
+      "input": "start",
+      "title": { "en": "Build", "kn": "ನಿರ್ಮಾಣ", "hi": "निर्माण" },
+      "prompt": {
+        "en": "Build your tower yourself. Mark when you start building.",
+        "kn": "ನಿಮ್ಮ ಗೋಪುರವನ್ನು ನೀವೇ ಕಟ್ಟಿ. ಕಟ್ಟಲು ಪ್ರಾರಂಭಿಸಿದಾಗ ಗುರುತಿಸಿ.",
+        "hi": "अपना टावर खुद बनाइए. जब बनाना शुरू करें तो बताइए."
+      }
+    },
+    {
+      "id": "test",
+      "key": "TEST",
+      "input": "observation",
+      "title": { "en": "Test", "kn": "ಪರೀಕ್ಷೆ", "hi": "परीक्षण" },
+      "prompt": {
+        "en": "Test your tower. What happened?",
+        "kn": "ನಿಮ್ಮ ಗೋಪುರವನ್ನು ಪರೀಕ್ಷಿಸಿ. ಏನಾಯಿತು?",
+        "hi": "अपने टावर को जाँचिए. क्या हुआ?"
+      }
+    },
+    {
+      "id": "explain",
+      "key": "EXPLAIN",
+      "input": "text",
+      "title": { "en": "Explain", "kn": "ವಿವರಣೆ", "hi": "व्याख्या" },
+      "prompt": {
+        "en": "What worked? What did not work? Why do you think that happened?",
+        "kn": "ಏನು ಕೆಲಸ ಮಾಡಿತು? ಏನು ಕೆಲಸ ಮಾಡಲಿಲ್ಲ? ಏಕೆ ಹಾಗೆ ಆಯಿತು ಎಂದು ನೀವು ಭಾವಿಸುತ್ತೀರಿ?",
+        "hi": "क्या काम किया? क्या नहीं किया? आपके अनुसार ऐसा क्यों हुआ?"
+      }
+    },
+    {
+      "id": "improve",
+      "key": "IMPROVE",
+      "input": "text",
+      "title": { "en": "Improve", "kn": "ಸುಧಾರಣೆ", "hi": "सुधार" },
+      "prompt": {
+        "en": "What would you change in your next attempt?",
+        "kn": "ಮುಂದಿನ ಪ್ರಯತ್ನದಲ್ಲಿ ನೀವು ಏನನ್ನು ಬದಲಾಯಿಸುತ್ತೀರಿ?",
+        "hi": "अगली बार आप क्या बदलेंगे?"
+      }
+    },
+    {
+      "id": "reflect",
+      "key": "REFLECT",
+      "input": "text",
+      "title": { "en": "Reflect", "kn": "ಚಿಂತನೆ", "hi": "चिंतन" },
+      "prompt": {
+        "en": "What did you discover? What would you try next?",
+        "kn": "ನೀವು ಏನನ್ನು ಕಂಡುಕೊಂಡಿರಿ? ಮುಂದೆ ಏನನ್ನು ಪ್ರಯತ್ನಿಸುತ್ತೀರಿ?",
+        "hi": "आपने क्या सीखा? आगे क्या आज़माएँगे?"
+      }
+    }
+  ],
+  "verification": {
+    "sourceChecked": "The linked Stick 'Em Academy guest page was fetched on 2026-11-02; it loads its lessons client-side, so no activity rules could be read from it.",
+    "unconfirmed": "Material counts, the official measuring rule and scoring have NOT been verified and are shown to the student as pending human confirmation. Nothing here should be presented as an official Stick 'Em rule."
+  }
+}

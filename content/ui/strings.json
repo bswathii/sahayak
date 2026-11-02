@@ -1,0 +1,58 @@
+{
+  "contentVersion": 1,
+  "_reviewNote": "Interface labels only. Kannada and Hindi labels are prepared for the demonstration and are NOT verified by a competent speaker; the student interface shows that status.",
+  "reviewedBy": null,
+  "status": {
+    "en": "SOURCE",
+    "kn": "UNVERIFIED",
+    "hi": "UNVERIFIED"
+  },
+  "strings": {
+    "appName": { "en": "Sahayak", "kn": "ಸಹಾಯಕ", "hi": "सहायक" },
+    "student": { "en": "Student", "kn": "ವಿದ್ಯಾರ್ಥಿ", "hi": "विद्यार्थी" },
+    "volunteer": { "en": "Volunteer", "kn": "ಸ್ವಯಂಸೇವಕ", "hi": "स्वयंसेवक" },
+    "join": { "en": "Join session", "kn": "ಅಧಿವೇಶನ ಸೇರಿ", "hi": "सत्र जॉइन करें" },
+    "sessionCode": { "en": "Session code", "kn": "ಅಧಿವೇಶನ ಕೋಡ್", "hi": "सत्र कोड" },
+    "language": { "en": "Language", "kn": "ಭಾಷೆ", "hi": "भाषा" },
+    "activity": { "en": "Activity", "kn": "ಚಟುವಟಿಕೆ", "hi": "गतिविधि" },
+    "stage": { "en": "Stage", "kn": "ಹಂತ", "hi": "चरण" },
+    "connection": { "en": "Connection", "kn": "ಸಂಪರ್ಕ", "hi": "कनेक्शन" },
+    "connecting": { "en": "connecting", "kn": "ಸಂಪರ್ಕಿಸುತ್ತಿದೆ", "hi": "जुड़ रहा है" },
+    "online": { "en": "online", "kn": "ಸಂಪರ್ಕದಲ್ಲಿದೆ", "hi": "ऑनलाइन" },
+    "reconnecting": { "en": "reconnecting", "kn": "ಮತ್ತೆ ಸಂಪರ್ಕಿಸುತ್ತಿದೆ", "hi": "दोबारा जुड़ रहा है" },
+    "cached": { "en": "lesson cached", "kn": "ಪಾಠ ಸಂಗ್ರಹಿಸಲಾಗಿದೆ", "hi": "पाठ सहेजा गया" },
+    "notCached": { "en": "lesson not cached", "kn": "ಪಾಠ ಸಂಗ್ರಹವಾಗಿಲ್ಲ", "hi": "पाठ सहेजा नहीं गया" },
+    "materials": { "en": "Materials", "kn": "ವಸ್ತುಗಳು", "hi": "सामग्री" },
+    "constraints": { "en": "Rules", "kn": "ನಿಯಮಗಳು", "hi": "नियम" },
+    "pendingConfirmation": { "en": "Pending human confirmation", "kn": "ಮಾನವ ದೃಢೀಕರಣ ಬಾಕಿ", "hi": "मानव पुष्टि बाकी" },
+    "conversation": { "en": "Conversation", "kn": "ಸಂಭಾಷಣೆ", "hi": "बातचीत" },
+    "send": { "en": "Send", "kn": "ಕಳುಹಿಸಿ", "hi": "भेजें" },
+    "typeMessage": { "en": "Type in English…", "kn": "ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಬರೆಯಿರಿ…", "hi": "अंग्रेज़ी में लिखिए…" },
+    "drawingFromVolunteer": { "en": "Drawing from your volunteer", "kn": "ನಿಮ್ಮ ಸ್ವಯಂಸೇವಕರ ಚಿತ್ರ", "hi": "आपके स्वयंसेवक का चित्र" },
+    "yourAnswer": { "en": "Your answer", "kn": "ನಿಮ್ಮ ಉತ್ತರ", "hi": "आपका उत्तर" },
+    "saveAnswer": { "en": "Save", "kn": "ಉಳಿಸಿ", "hi": "सहेजें" },
+    "saved": { "en": "saved", "kn": "ಉಳಿಸಲಾಗಿದೆ", "hi": "सहेजा गया" },
+    "previous": { "en": "Previous", "kn": "ಹಿಂದಿನ", "hi": "पिछला" },
+    "next": { "en": "Next", "kn": "ಮುಂದೆ", "hi": "आगे" },
+    "sketch": { "en": "Your sketch", "kn": "ನಿಮ್ಮ ಚಿತ್ರ", "hi": "आपका चित्र" },
+    "clearSketch": { "en": "Clear", "kn": "ಅಳಿಸಿ", "hi": "मिटाएँ" },
+    "network": { "en": "Measurements", "kn": "ಅಳತೆಗಳು", "hi": "माप" },
+    "original": { "en": "Original", "kn": "ಮೂಲ", "hi": "मूल" },
+    "translation": { "en": "Translation", "kn": "ಅನುವಾದ", "hi": "अनुवाद" },
+    "obsItWorks": { "en": "It works.", "kn": "ಇದು ಕೆಲಸ ಮಾಡುತ್ತದೆ.", "hi": "यह काम करता है।" },
+    "obsItDoesNotWork": { "en": "It does not work.", "kn": "ಇದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ.", "hi": "यह काम नहीं करता।" },
+    "obsStuck": { "en": "I'm stuck.", "kn": "ನಾನು ಸಿಕ್ಕಿಹಾಕಿಕೊಂಡಿದ್ದೇನೆ.", "hi": "मैं अटक गया/गई हूँ।" },
+    "obsNeedHelp": { "en": "I need help.", "kn": "ನನಗೆ ಸಹಾಯ ಬೇಕು.", "hi": "मुझे मदद चाहिए।" },
+    "obsTryAgain": { "en": "I want to try again.", "kn": "ನಾನು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಬಯಸುತ್ತೇನೆ.", "hi": "मैं फिर से कोशिश करना चाहता/चाहती हूँ।" },
+    "observationNote": {
+      "en": "Your own observation — not a measurement of learning.",
+      "kn": "ನಿಮ್ಮ ಸ್ವಂತ ಗಮನಿಸುವಿಕೆ — ಕಲಿಕೆಯ ಅಳತೆ ಅಲ್ಲ.",
+      "hi": "आपका अपना अवलोकन — सीखने का माप नहीं।"
+    },
+    "notReviewed": {
+      "en": "Prepared content — not yet reviewed by a native speaker.",
+      "kn": "ಸಿದ್ಧಪಡಿಸಿದ ವಿಷಯ — ಸ್ಥಳೀಯ ಭಾಷಿಕರಿಂದ ಇನ್ನೂ ಪರಿಶೀಲಿಸಲಾಗಿಲ್ಲ.",
+      "hi": "तैयार सामग्री — किसी स्थानीय वक्ता से अभी जाँची नहीं गई."
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-11-02T09:48:12.904Z",
+  "environment": {
+    "node": "v24.22.0",
+    "platform": "win32 10.0.26200",
+    "cpu": "Snapdragon(R) X - X126100 - Qualcomm(R) Oryon(TM) CPU",
+    "cores": 8,
+    "serverHost": "127.0.0.1 (loopback, no network shaping applied)"
+  },
+  "scenario": {
+    "description": "Two clients in one session. Every 2 s: one student message, one volunteer message, alternating vector stroke chunks of 30 points, and a latency ping from each client.",
+    "durationSeconds": 6.4,
+    "tickMs": 2000,
+    "payloadCapBps": 0,
+    "networkShaping": "none — loopback only"
+  },
+  "payload": {
+    "serverToClientsBytes": 7520,
+    "serverToClientsBytesPerSecond": 1171,
+    "studentToServerBytes": 290,
+    "volunteerToServerBytes": 1143,
+    "combinedBytesPerSecond": 1394.1,
+    "eventsDelivered": 17,
+    "note": "Application event frames only. Excludes WebSocket handshake, HTTP lesson download, TLS and TCP overhead, so real wire traffic is higher."
+  },
+  "latencyMs": {
+    "samples": 4,
+    "min": 11,
+    "p50": 32,
+    "p95": 86,
+    "max": 86
+  },
+  "delivery": {
+    "eventsDelivered": 17,
+    "capDrops": 0,
+    "note": "No application-level cap; loopback bandwidth is not a constraint."
+  },
+  "limitations": [
+    "Loopback only: no real mobile network was used, so these numbers do not describe a 2G/EDGE link.",
+    "Both clients ran on the same machine as the server.",
+    "No OS-level network shaping or DevTools throttling was applied to this run.",
+    "Payload figures exclude per-frame WebSocket and TCP overhead."
+  ]
+}

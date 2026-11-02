@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sahayak — Student</title>
+<meta name="theme-color" content="#0a0f16" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><strong>Sahayak</strong><span>student</span></div>
+    <span class="pill" id="conn">not connected</span>
+    <span class="pill" id="stagePill">—</span>
+    <div class="spacer"></div>
+    <label for="lang" style="margin:0;font-size:11px" id="langLabel">Language</label>
+    <select id="lang" style="width:auto;min-width:130px" aria-label="Language">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी (Hindi)</option>
+      <option value="kn">ಕನ್ನಡ (Kannada)</option>
+    </select>
+    <span class="small muted mono" id="codeLabel"></span>
+  </header>
+
+  <main>
+    <!-- Join screen: also shows the cached activity even without a session. -->
+    <div id="joinPanel" class="panel" style="max-width:520px;margin:30px auto">
+      <div class="panel-head"><h2 id="joinTitle">Join a session</h2></div>
+      <div class="panel-body">
+        <label for="code" id="codeFieldLabel">Session code from your volunteer</label>
+        <input id="code" placeholder="e.g. K7QM2P" maxlength="8" autocapitalize="characters" style="letter-spacing:0.2em;font-family:var(--mono);text-transform:uppercase" />
+        <div class="row" style="margin-top:12px">
+          <button class="primary" id="join">Join</button>
+          <span class="err" id="joinErr"></span>
+        </div>
+        <p class="tiny muted" style="margin-top:14px;line-height:1.6" id="joinNote">
+          No account, name or phone number is collected. The browser keeps only a random device identifier
+          so a reconnection can resume the same session.
+        </p>
+        <div id="cachedPreview" style="margin-top:18px"></div>
+      </div>
+    </div>
+
+    <div id="workspace" class="grid two" hidden>
+      <section class="grid" style="align-content:start">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 id="activityHeading">Activity</h2>
+            <div class="spacer"></div>
+            <span class="pill" id="cachePill">cache —</span>
+          </div>
+          <div class="panel-body" id="lessonBody"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2 id="pathwayHeading">Learning pathway</h2>
+            <div class="spacer"></div>
+            <span class="small muted" id="stageProgress"></span>
+          </div>
+          <div class="panel-body">
+            <div class="stages" id="stages"></div>
+            <div class="stage-panel" id="stagePanel"></div>
+            <div class="row wrap" style="margin-top:14px">
+              <button class="small ghost" id="prevStage">Previous</button>
+              <button class="small" id="nextStage">Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid" style="align-content:start">
+        <div class="panel" style="min-height:300px">
+          <div class="panel-head">
+            <h2 id="conversationHeading">Conversation</h2>
+            <div class="spacer"></div>
+            <span class="small muted" id="presence">—</span>
+          </div>
+          <div id="stream"></div>
+          <div class="composer">
+            <input id="input" placeholder="Type in English…" maxlength="500" autocomplete="off" />
+            <button class="primary" id="send">Send</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2 id="drawingHeading">Drawing from your volunteer</h2>
+            <div class="spacer"></div>
+            <span class="pill" id="strokeCount">0 strokes</span>
+          </div>
+          <div class="panel-body">
+            <canvas class="board readonly" id="board"></canvas>
+            <p class="tiny muted" style="margin:8px 0 0">
+              Reconstructed from received vector strokes, not an image.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2 id="networkHeading">Measurements</h2>
+            <div class="spacer"></div>
+            <button class="small ghost" id="resetMetrics">reset</button>
+          </div>
+          <div class="panel-body">
+            <div class="metrics" id="metrics"></div>
+            <p class="tiny muted" style="margin:10px 0 0;line-height:1.5">
+              Application payload only (Sahayak event frames). Lesson downloads, handshake and browser/TCP
+              overhead are excluded. This is not a measurement of total network throughput.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span id="activityLabel">Activity content is prepared for this demonstration.</span>
+    <span>No audio · no video · no images transmitted</span>
+  </footer>
+</div>
+
+<script type="module" src="/js/student.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "sahayak",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sahayak — multilingual STEAM learning assistance platform for low-bandwidth connections",
+  "type": "module",
+  "main": "src/server/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "dev": "node --watch src/server/index.js",
+    "smoke": "node test/smoke.test.js",
+    "measure": "node test/measure.js",
+    "reset-db": "node -e \"import('node:fs').then(fs=>{try{fs.rmSync('data/sahayak.db')}catch{};try{fs.rmSync('data/sahayak.db-wal')}catch{};try{fs.rmSync('data/sahayak.db-shm')}catch{}})\""
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}
